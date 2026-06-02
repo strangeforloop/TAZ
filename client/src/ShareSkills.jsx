@@ -5,12 +5,14 @@ import React from 'react';
 // category -> bool) and handles `onToggle`.
 
 export const SHARE_CATEGORIES = [
-  'Programming & Tech',
-  'Graphic Design',
-  'Writing & Translation',
-  'Video & Animation',
-  'Music & Audio',
-  'Marketing & Business',
+  'Food',
+  'Maintenance/Repair',
+  'Education',
+  'Connection',
+  'Cleaning',
+  'Caregiving',
+  "Transportation/Carpooling",
+  "Other"
 ];
 
 export default function ShareSkills({
