@@ -69,7 +69,7 @@ cd client && npm run dev
 
 ## Testing
 
-Run tests automatically after any code change. If no test suite exists yet, note it rather than skipping silently.
+Add tests after major features. If no test suite exists yet, note it rather than skipping silently.
 
 ## Hard Limits
 

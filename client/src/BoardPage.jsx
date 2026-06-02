@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import ConnectModal from './ConnectModal';
 
-// Stub board page: shows everything currently available — both shared skills
-// (/api/skills) and requested needs (/api/needs). Read-only for now.
+// Board page: shows all shared skills and requested needs.
+// Clicking an entry opens ConnectModal so the viewer can reach out to the poster.
 
 export default function BoardPage({ onBack }) {
   const [skills, setSkills] = useState([]);
   const [needs, setNeeds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selected, setSelected] = useState(null); // { entry, type: 'skill' | 'need' }
 
   useEffect(() => {
     Promise.all([
@@ -34,9 +36,23 @@ export default function BoardPage({ onBack }) {
 
         {!loading && !error && (
           <>
-            <Column title='SKILLS ON OFFER' accent='#a3e635' entries={skills} />
-            <Column title='NEEDS REQUESTED' accent='#22d3ee' entries={needs} />
+            <Column title='SKILLS ON OFFER' accent='#a3e635' entries={skills} onSelect={(e) => setSelected({ entry: e, type: 'skill' })} />
+            <Column title='NEEDS REQUESTED' accent='#22d3ee' entries={needs} onSelect={(e) => setSelected({ entry: e, type: 'need' })} />
           </>
+        )}
+
+        {selected && (
+          <ConnectModal
+            entry={selected.entry}
+            type={selected.type}
+            onClose={() => setSelected(null)}
+            onSent={(id) => {
+              const mark = (list) =>
+                list.map((e) => (e.id === id ? { ...e, pending: true } : e));
+              if (selected.type === 'skill') setSkills(mark);
+              else setNeeds(mark);
+            }}
+          />
         )}
 
         <div style={styles.buttonContainer}>
@@ -53,7 +69,7 @@ export default function BoardPage({ onBack }) {
   );
 }
 
-function Column({ title, accent, entries }) {
+function Column({ title, accent, entries, onSelect }) {
   return (
     <div style={styles.section}>
       <h2 style={{ ...styles.columnHeader, backgroundColor: accent }}>{title}</h2>
@@ -62,9 +78,17 @@ function Column({ title, accent, entries }) {
       ) : (
         <div style={styles.list}>
           {entries.map((e) => (
-            <div key={e.id} style={styles.entry}>
+            <div
+              key={e.id}
+              style={{ ...styles.entry, cursor: 'pointer' }}
+              onClick={() => onSelect(e)}
+              title='Click to connect'
+            >
               <span style={styles.entryItem}>{(e.item || '').toUpperCase()}</span>
-              {e.email && <span style={styles.entryMeta}>{e.email}</span>}
+              <span style={styles.entryRight}>
+                {e.pending && <span style={styles.pendingBadge}>PENDING</span>}
+                {e.email && <span style={styles.entryMeta}>{e.email}</span>}
+              </span>
             </div>
           ))}
         </div>
@@ -148,6 +172,22 @@ const styles = {
     fontSize: '0.85rem',
     fontWeight: 'bold',
     color: '#000000',
+  },
+  entryRight: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    flexShrink: 0,
+  },
+  pendingBadge: {
+    fontSize: '0.7rem',
+    fontWeight: 'bold',
+    letterSpacing: '1px',
+    padding: '2px 8px',
+    border: '2px solid #000',
+    backgroundColor: '#fbbf24',
+    color: '#000',
+    textTransform: 'uppercase',
   },
   entryMeta: {
     fontSize: '0.75rem',
