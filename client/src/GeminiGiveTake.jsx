@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
-
-const SKILL_CATEGORIES = [
-  'Programming & Tech',
-  'Graphic Design',
-  'Writing & Translation',
-  'Video & Animation',
-  'Music & Audio',
-  'Marketing & Business',
-];
+import ShareSkills from './ShareSkills';
+import RequestAssistance from './RequestAssistance';
 
 export default function GeminiGiveTake() {
   const [sharedSkills, setSharedSkills] = useState({});
@@ -85,66 +78,16 @@ export default function GeminiGiveTake() {
 
         <form onSubmit={(e) => e.preventDefault()}>
           {/* SECTION 1: OFFERING SKILLS */}
-          <div style={styles.section}>
-            <label style={styles.questionLabel}>
-              DO YOU HAVE ANY SKILLS YOU'D LIKE TO SHARE?
-            </label>
-            <div style={styles.verticalStack}>
-              {SKILL_CATEGORIES.map((category) => {
-                const isChecked = !!sharedSkills[category];
-                return (
-                  <label
-                    key={`share-${category}`}
-                    style={{
-                      ...styles.checkboxTile,
-                      backgroundColor: isChecked ? '#a3e635' : '#ffffff',
-                    }}
-                  >
-                    <input
-                      type='checkbox'
-                      checked={isChecked}
-                      onChange={() => handleCheckboxChange(category, 'share')}
-                      style={styles.nativeCheckbox}
-                    />
-                    <span style={styles.customText}>
-                      {category.toUpperCase()}
-                    </span>
-                  </label>
-                );
-              })}
-            </div>
-          </div>
+          <ShareSkills
+            selected={sharedSkills}
+            onToggle={(category) => handleCheckboxChange(category, 'share')}
+          />
 
           {/* SECTION 2: ASKING FOR HELP */}
-          <div style={styles.section}>
-            <label style={styles.questionLabel}>
-              WOULD YOU LIKE ANY ASSISTANCE WITH THE FOLLOWING?
-            </label>
-            <div style={styles.verticalStack}>
-              {SKILL_CATEGORIES.map((category) => {
-                const isChecked = !!requestedAssistance[category];
-                return (
-                  <label
-                    key={`request-${category}`}
-                    style={{
-                      ...styles.checkboxTile,
-                      backgroundColor: isChecked ? '#22d3ee' : '#ffffff',
-                    }}
-                  >
-                    <input
-                      type='checkbox'
-                      checked={isChecked}
-                      onChange={() => handleCheckboxChange(category, 'request')}
-                      style={styles.nativeCheckbox}
-                    />
-                    <span style={styles.customText}>
-                      {category.toUpperCase()}
-                    </span>
-                  </label>
-                );
-              })}
-            </div>
-          </div>
+          <RequestAssistance
+            selected={requestedAssistance}
+            onToggle={(category) => handleCheckboxChange(category, 'request')}
+          />
 
           {/* BRUTALIST BUTTON MATRIX */}
           <div style={styles.buttonContainer}>
@@ -226,43 +169,6 @@ const styles = {
     margin: '0 0 35px 0',
     color: '#555555',
     fontSize: '0.95rem',
-  },
-  section: {
-    marginBottom: '40px',
-  },
-  questionLabel: {
-    fontSize: '1.1rem',
-    display: 'block',
-    marginBottom: '15px',
-    color: '#000000',
-    lineHeight: '1.4',
-  },
-  verticalStack: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px', // Creates the distinct block layout with separation lines
-  },
-  checkboxTile: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    padding: '14px',
-    border: '3px solid #000000',
-    boxShadow: '3px 3px 0px 0px #000000',
-    cursor: 'pointer',
-    userSelect: 'none',
-  },
-  nativeCheckbox: {
-    width: '20px',
-    height: '20px',
-    accentColor: '#000000',
-    cursor: 'pointer',
-    border: '3px solid #000000',
-  },
-  customText: {
-    fontSize: '0.85rem',
-    fontWeight: 'bold',
-    color: '#000000',
   },
   buttonContainer: {
     display: 'flex',
