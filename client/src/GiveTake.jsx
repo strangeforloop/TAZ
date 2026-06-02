@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import ShareSkills from './ShareSkills';
 import RequestAssistance from './RequestAssistance';
+import InfoDetails from './InfoDetails';
+// import InfoDetails from './InfoDetails';
 
 export default function GiveTake({ onViewBoard }) {
   const [step, setStep] = useState('choose'); // 'choose' | 'share' | 'need'
@@ -99,7 +101,9 @@ export default function GiveTake({ onViewBoard }) {
         <div style={styles.card}>
           <h1 style={styles.title}>GIVE & TAKE</h1>
           <p style={styles.subtitle}>What would you like to do?</p>
-
+          <div style={styles.infoWrapper}>
+            <InfoDetails />
+          </div>
           <div style={styles.buttonContainer}>
             <button
               type='button'
@@ -160,7 +164,9 @@ export default function GiveTake({ onViewBoard }) {
               onToggle={(category) => handleCheckboxChange(category, 'request')}
             />
           )}
-
+          <div style={styles.infoWrapper}>
+            <InfoDetails />
+          </div>
           {/* EMAIL — required on either form */}
           <div style={styles.section}>
             <label style={styles.questionLabel}>YOUR EMAIL</label>
