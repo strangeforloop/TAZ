@@ -1,11 +1,18 @@
-// Root layout component.
-// Renders the two-column Give & Take board (GiveBoard | TakeBoard)
-// and the PostForm for submitting new entries.
-import GeminiGiveTake from './GeminiGiveTake'; 
+// Root layout. Switches between the Give & Take form flow and the board page.
+import { useState } from 'react';
+import GeminiGiveTake from './GeminiGiveTake';
+import BoardPage from './BoardPage';
+
 export default function App() {
+  const [view, setView] = useState('home'); // 'home' | 'board'
+
   return (
     <div>
-      <GeminiGiveTake />
+      {view === 'board' ? (
+        <BoardPage onBack={() => setView('home')} />
+      ) : (
+        <GeminiGiveTake onViewBoard={() => setView('board')} />
+      )}
     </div>
   );
 }
