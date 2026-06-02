@@ -8,7 +8,8 @@ import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
 import { Badge } from './components/ui/badge';
 
-export default function ConnectModal({ entry, type, onClose }) {
+// onSent(id) is called after a successful submit so BoardPage can mark the entry pending.
+export default function ConnectModal({ entry, type, onClose, onSent }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -22,13 +23,19 @@ export default function ConnectModal({ entry, type, onClose }) {
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
 
-  function submit() {
+  async function submit() {
     if (!name.trim()) { setError('PLEASE ENTER YOUR NAME.'); return; }
     if (!email.trim() || !/.+@.+\..+/.test(email.trim())) {
       setError('PLEASE ENTER A VALID EMAIL.');
       return;
     }
     setError('');
+    await fetch('/api/connect', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: entry.id, type }),
+    });
+    onSent(entry.id);
     setDone(true);
   }
 

@@ -51,4 +51,17 @@ router.post('/skills', makePost('skills.json'));
 router.get('/needs', (_req, res) => res.json(read('needs.json')));
 router.post('/needs', makePost('needs.json'));
 
+// Mark an entry as pending (someone has reached out about it).
+// Body: { id: string, type: 'skill' | 'need' }
+router.post('/connect', (req, res) => {
+  const { id, type } = req.body;
+  const filename = type === 'skill' ? 'skills.json' : 'needs.json';
+  const entries = read(filename);
+  const idx = entries.findIndex((e) => e.id === id);
+  if (idx === -1) return res.status(404).json({ error: 'Entry not found' });
+  entries[idx].pending = true;
+  write(filename, entries);
+  res.json(entries[idx]);
+});
+
 module.exports = router;

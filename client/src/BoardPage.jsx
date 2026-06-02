@@ -46,6 +46,12 @@ export default function BoardPage({ onBack }) {
             entry={selected.entry}
             type={selected.type}
             onClose={() => setSelected(null)}
+            onSent={(id) => {
+              const mark = (list) =>
+                list.map((e) => (e.id === id ? { ...e, pending: true } : e));
+              if (selected.type === 'skill') setSkills(mark);
+              else setNeeds(mark);
+            }}
           />
         )}
 
@@ -79,7 +85,10 @@ function Column({ title, accent, entries, onSelect }) {
               title='Click to connect'
             >
               <span style={styles.entryItem}>{(e.item || '').toUpperCase()}</span>
-              {e.email && <span style={styles.entryMeta}>{e.email}</span>}
+              <span style={styles.entryRight}>
+                {e.pending && <span style={styles.pendingBadge}>PENDING</span>}
+                {e.email && <span style={styles.entryMeta}>{e.email}</span>}
+              </span>
             </div>
           ))}
         </div>
@@ -163,6 +172,22 @@ const styles = {
     fontSize: '0.85rem',
     fontWeight: 'bold',
     color: '#000000',
+  },
+  entryRight: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    flexShrink: 0,
+  },
+  pendingBadge: {
+    fontSize: '0.7rem',
+    fontWeight: 'bold',
+    letterSpacing: '1px',
+    padding: '2px 8px',
+    border: '2px solid #000',
+    backgroundColor: '#fbbf24',
+    color: '#000',
+    textTransform: 'uppercase',
   },
   entryMeta: {
     fontSize: '0.75rem',
